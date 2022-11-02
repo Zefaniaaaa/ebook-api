@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Book;
-class BookController extends Controller
+use App\Models\Author;
+
+class AuthorController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -13,7 +14,8 @@ class BookController extends Controller
      */
     public function index()
     {
-        //
+        $author = Author::all();
+        return $author;
     }
 
     /**
@@ -34,17 +36,18 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
-        $table = Book::create([
-            "title" => $request->title,
-            "description" => $request->description,
-            "author" => $request->author,
-            "publisher" => $request->publisher,
-            "date_of_issue" => $request->date_of_issue
+        $table = author::create([
+            "name" => $request->name,
+            "date_of_birth" => $request->date_of_birth,
+            "place_of_birth" => $request->place_of_birth,
+            "gender" => $request->gender,
+            "email" => $request->email,
+            "no_hp" => $request->no_hp
         ]);
 
         return response()->json([
             'success' => 201,
-            'message' => 'data berhasil disimpan',
+            'messages' => 'data has been successfully',
             'data' => $table
         ], 201);
     }
@@ -57,17 +60,16 @@ class BookController extends Controller
      */
     public function show($id)
     {
-        $book = Book::find($id);
-        if ($book) {
+        $author = author::find($id);
+        if ($author) {
             return response()->json([
                 'status' => 200,
-                'data' => $book
-
+                'data' => $author
             ], 200);
         } else {
             return response()->json([
                 'status' => 404,
-                'message' => 'id atas ' . $id . ' tidak ditemukan'
+                'messages' => 'id' . $id . 'could not be found'
             ], 404);
         }
     }
@@ -92,23 +94,23 @@ class BookController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $book = Book::find($id);
-        if($book){
-            $book->title = $request->title ? $request->title : $book->title;
-            $book->description = $request->description ? $request->description : $book->description;
-            $book->author = $request->author ? $request->author : $book->author;
-            $book->publisher = $request->publisher ? $request->publisher : $book->publisher;
-            $book->date_of_issue = $request->date_of_issue ? $request->date_of_issue : $book->date_of_issue;
-            $book->save();
+        $author = author::find($id);
+        if ($author) {
+            $author->name = $request->name ? $request->name : $author->name;
+            $author->date_of_birth = $request->date_of_birth ? $request->date_of_birth : $author->date_of_birth;
+            $author->place_of_birth = $request->place_of_birth ? $request->place_of_birth : $author->place_of_birth;
+            $author->gender = $request->gender ? $request->gender : $author->gender;
+            $author->email = $request->email ? $request->email : $author->email;
+            $author->no_hp = $request->no_hp ? $request->no_hp : $author->no_hp;
+            $author->save();
             return response()->json([
                 'status' => 200,
-                'data' => $book
+                'data' => $author
             ],200);
-
-        }else{
+        } else {
             return response()->json([
-                'status'=>404,
-                'message'=> $id . ' tidak ditemukan'
+                'status' => 404,
+                'messages' => 'id ' . $id . ' could not be found'
             ],404);
         }
     }
@@ -121,17 +123,18 @@ class BookController extends Controller
      */
     public function destroy($id)
     {
-        $book = Book::where('id',$id)->first();
-        if($book){
-            $book->delete();
+        $author = author::where('id',$id)->first();
+        if ($author) {
+            $author->delete();
             return response()->json([
-                'status' =>200,
-                'data'=> $book
+                'status' => 200,
+                'data' => $author,
+                'messages' => 'data deleted successfully'
             ],200);
-        }else{
+        } else {
             return response()->json([
                 'status' => 404,
-                'message' => 'id' . $id . ' tidak ditemukan'
+                'messages' => 'id ' . $id . ' could not be found'
             ],404);
         }
     }
